@@ -1,0 +1,14 @@
+.rusty {
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 40px;;
+}
+
+.title-container {
+    display: flexbox;
+    text-align: center;
+}
+
+body {
+    background-color: gray;
+}

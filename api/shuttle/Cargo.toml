@@ -1,0 +1,14 @@
+[package]
+name = "steel-borne"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+actix-web = "4.3.1"
+shuttle-actix-web = "0.36.0"
+shuttle-runtime = "0.36.0"
+tokio = "1.26.0"
+
+askama = "0.12.1"
+serde = { version = "1.0.196", features = ["derive"] }
+serde_json = "1.0.113"
