@@ -14,7 +14,7 @@ struct IndexTemplate {
 #[get("/")]
 async fn index() -> Result<impl Responder> {
     let index = IndexTemplate {
-        content: "Hello, world!".to_string(),
+        content: "neruneruna7の技術お試し用のwebサイトです".to_string(),
     };
     let renderd = index.render().unwrap();
 
