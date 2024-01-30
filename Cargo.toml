@@ -1,6 +1,6 @@
 [workspace]
 members = [
     "api/shuttle",
-    "front",
+    # "front",
 ]
 resolver = "2"

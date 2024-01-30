@@ -1,1 +1,4 @@
 name="steel-borne"
+assets = [
+    "api/shuttle/templates/*"
+]
