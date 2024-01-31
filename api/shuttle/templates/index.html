@@ -1,44 +1,36 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- cssを使いたい -->
-    <link rel="stylesheet" href="css/index.css">
-    <title>Steel Borne</title>
-</head>
-<body>
-    <div class="title-container">
-        <div class="title"><h1>Steel Borne</h1></div>    
-        <div class="rusty"><h3>やがて錆びゆく</h3></div>
-        <div class="rusty">Be rusty</div>
-        <p>{{content}}</p>
-    </div>
+{% extends "base.html" %}
 
-    <style>
-        .title {
-            font-size: 50px;
-            font-family: 'Raleway', sans-serif;
-            color: white;
-            text-align: center;
-            margin-top: 40px;
-            margin-bottom: 40px;
-        }
+{% block title %}{{title}}{% endblock %}
 
-        .rusty {
-            margin-left: auto;
-            margin-right: auto;
-            margin-bottom: 40px;;
-        }
 
-        .title-container {
-            display: flexbox;
-            text-align: center;
-        }
 
-        body {
-            background-color: gray;
-        }
-    </style>
-</body>
-</html>
+{% block content %}
+<div class="title-container">
+    <div class="title"><h1>Steel Borne</h1></div>    
+    <div class="rusty"><h3>やがて錆びゆく</h3></div>
+    <div class="rusty">Be rusty</div>
+    <p>{{content}}</p>
+</div>
+
+<style>
+    .title {
+        font-size: 50px;
+        font-family: 'Raleway', sans-serif;
+        color: white;
+        text-align: center;
+        margin-top: 40px;
+        margin-bottom: 40px;
+    }
+
+    .rusty {
+        margin-left: auto;
+        margin-right: auto;
+        margin-bottom: 40px;;
+    }
+
+    .title-container {
+        display: flexbox;
+        text-align: center;
+    }
+</style>
+{% endblock %}

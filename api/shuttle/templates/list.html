@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}List{% endblock %}
+
+{% block content %}
+
+{% for item in items %}
+<div class="item-container">
+    <h3>{{ item }}</h3>
+</div>
+{% endfor %}
+
+
+<style>
+    .item-container {
+        display: flexbox;
+        text-align: left;
+        border-style: solid;
+        border-width: 5px;
+        border-radius: 10px;
+        border-color: white;
+        margin: 50px;
+    }
+</style>
+{% endblock %}
