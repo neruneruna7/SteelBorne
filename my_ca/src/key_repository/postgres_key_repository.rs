@@ -14,7 +14,23 @@ impl PostgresKeyRepository {
 
 impl KeyRepository for PostgresKeyRepository {
     async fn set_key(&self, guild_id: u64, public_key: String) -> KeyResult<Key> {
-        todo!()
+        let guild_id = format!("{}", guild_id);
+        let r = sqlx::query!(
+            r#"
+            INSERT INTO keys (guild_id, public_key)
+            VALUES ($1, $2)
+            RETURNING guild_id, public_key
+            "#,
+            guild_id,
+            public_key
+        )
+        .fetch_one(&self.pool)
+        .await?;
+
+        Ok(Key {
+            guild_id: r.guild_id.parse().unwrap(),
+            public_key: r.public_key,
+        })
     }
 
     async fn get_key(&self, guild_id: u64) -> KeyResult<Key> {
@@ -38,10 +54,39 @@ impl KeyRepository for PostgresKeyRepository {
     }
 
     async fn update_key(&self, guild_id: u64, public_key: String) -> KeyResult<Key> {
-        todo!()
+        let guild_id = format!("{}", guild_id);
+        let r = sqlx::query!(
+            r#"
+            UPDATE keys
+            SET public_key = $1
+            WHERE guild_id = $2
+            RETURNING guild_id, public_key
+            "#,
+            public_key,
+            guild_id
+        )
+        .fetch_one(&self.pool)
+        .await?;
+
+        Ok(Key {
+            guild_id: r.guild_id.parse().unwrap(),
+            public_key: r.public_key,
+        })
     }
 
     async fn delete_key(&self, guild_id: u64) -> KeyResult<u64> {
-        todo!()
+        let guild_id = format!("{}", guild_id);
+        let r = sqlx::query!(
+            r#"
+            DELETE FROM keys
+            WHERE guild_id = $1
+            RETURNING guild_id
+            "#,
+            guild_id
+        )
+        .fetch_one(&self.pool)
+        .await?;
+
+        Ok(r.guild_id.parse().unwrap())
     }
 }
