@@ -9,6 +9,8 @@ use shuttle_actix_web::ShuttleActixWeb;
 
 use askama::Template;
 use serde::{Deserialize, Serialize};
+use shuttle_runtime::CustomError;
+use sqlx::{Executor, PgPool};
 
 #[derive(Debug, Serialize, Deserialize, Template)]
 #[template(path = "index.html")]
@@ -29,7 +31,15 @@ async fn index() -> Result<impl Responder> {
 }
 
 #[shuttle_runtime::main]
-async fn main() -> ShuttleActixWeb<impl FnOnce(&mut ServiceConfig) + Send + Clone + 'static> {
+async fn main(
+    #[shuttle_shared_db::Postgres()] pool: PgPool,
+) -> ShuttleActixWeb<impl FnOnce(&mut ServiceConfig) + Send + Clone + 'static> {
+    let _ = pool
+        .execute(include_str!("../../db/schema.sql"))
+        .await
+        .map_err(CustomError::new)
+        .unwrap();
+
     let config = move |cfg: &mut ServiceConfig| {
         cfg.service(web::scope("/").service(index));
         cfg.service(
