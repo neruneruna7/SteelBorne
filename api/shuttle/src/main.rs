@@ -35,37 +35,10 @@ async fn index() -> Result<impl Responder> {
     Ok(HttpResponse::Ok().body(renderd))
 }
 
-fn secret_store_read(secret_sotore: SecretStore) -> Result<Vec<Key>> {
-    let row_num = if let Some(row_num) = secret_sotore.get("ROW_NUM") {
-        row_num.parse::<usize>().unwrap()
-    } else {
-        panic!("ROW_NUM is not found");
-    };
-
-    let mut keys = Vec::new();
-    for i in 0..row_num {
-        if let Some(key) = secret_sotore.get(&format!("K{}", i)) {
-            println!("key: {}", &key);
-            keys.push(serde_json::from_str::<Key>(&key.replace("/", "")).unwrap());
-            // dbに格納する
-        } else {
-            panic!("KEY{} is not found", i);
-        }
-    }
-
-    Ok(keys)
-}
-
 #[shuttle_runtime::main]
 async fn main(
     #[shuttle_shared_db::Postgres()] pool: PgPool,
-    #[shuttle_secrets::Secrets] secret_store: SecretStore,
 ) -> ShuttleActixWeb<impl FnOnce(&mut ServiceConfig) + Send + Clone + 'static> {
-    let k0 = secret_store.get("K0").unwrap();
-    println!("k0: {}", k0);
-
-    let secret_keys = secret_store_read(secret_store).unwrap();
-
     let _ = pool
         .execute(include_str!("../../db/schema.sql"))
         .await
@@ -74,9 +47,9 @@ async fn main(
 
     let key_repository = my_ca::key_repository::postgres_key_repository::PostgresKeyRepository::new(
         pool,
-        secret_keys,
+        Vec::new(),
     );
-    // key_repository.init().await.unwrap();
+    key_repository.init().await.unwrap();
     let key_repository = actix_web::web::Data::new(key_repository);
 
     let config = move |cfg: &mut ServiceConfig| {

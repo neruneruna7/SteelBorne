@@ -9,7 +9,7 @@ pub fn service(cfg: &mut ServiceConfig) {
     cfg.service(web::scope("/oreoreca").service(get));
 }
 
-#[get("/oreoreca/get/{guild_id}")]
+#[get("/get/{guild_id}")]
 async fn get(
     guild_id: web::Path<u64>,
     repo: web::Data<PostgresKeyRepository>,
