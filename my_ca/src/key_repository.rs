@@ -10,14 +10,17 @@ pub type KeyResult<T> = Result<T, Error>;
 pub struct Key {
     guild_id: u64,
     public_key: String,
+    manage_webhook: String,
 }
 
 impl Key {
-    pub fn new(guild_id: u64, public_key: &str) -> Self {
+    pub fn new(guild_id: u64, public_key: &str, manage_webhook: &str) -> Self {
         let public_key = public_key.to_string();
+        let manage_webhook = manage_webhook.to_string();
         Self {
             guild_id,
             public_key,
+            manage_webhook,
         }
     }
 }

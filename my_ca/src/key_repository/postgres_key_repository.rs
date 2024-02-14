@@ -12,6 +12,7 @@ use super::{Key, KeyRepository, KeyResult};
 struct PostgresKey {
     guild_id: String,
     public_key: String,
+    manage_webhook: String,
 }
 
 // Fromトレイトを実装して，Keyに変換できるようにする
@@ -20,12 +21,10 @@ impl From<PostgresKey> for Key {
         Key {
             guild_id: p.guild_id.parse().unwrap(),
             public_key: p.public_key,
+            manage_webhook: p.manage_webhook,
         }
     }
 }
-
-
-
 
 pub struct PostgresKeyRepository {
     pool: sqlx::PgPool,
@@ -46,13 +45,14 @@ impl KeyRepository for PostgresKeyRepository {
         let guild_id = format!("{}", key.guild_id);
         let r = sqlx::query_as::<_, PostgresKey>(
             r#"
-            INSERT INTO keys (guild_id, public_key)
-            VALUES ($1, $2)
-            RETURNING guild_id, public_key
+            INSERT INTO keys (guild_id, public_key, manage_webhook)
+            VALUES ($1, $2, $3)
+            RETURNING guild_id, public_key, manage_webhook
             "#,
         )
         .bind(guild_id)
         .bind(key.public_key)
+        .bind(key.manage_webhook)
         .fetch_one(&self.pool)
         .await?
         .into();
@@ -67,7 +67,7 @@ impl KeyRepository for PostgresKeyRepository {
         let guild_id = format!("{}", guild_id);
         let r = sqlx::query_as::<_, PostgresKey>(
             r#"
-            SELECT guild_id, public_key
+            SELECT guild_id, public_key, manage_webhook
             FROM keys
             WHERE guild_id = $1
             "#,
@@ -88,13 +88,14 @@ impl KeyRepository for PostgresKeyRepository {
         let r = sqlx::query_as::<_, PostgresKey>(
             r#"
             UPDATE keys
-            SET public_key = $1
-            WHERE guild_id = $2
-            RETURNING guild_id, public_key
+            SET public_key = $2, manage_webhook = $3
+            WHERE guild_id = $1
+            RETURNING guild_id, public_key, manage_webhook
             "#,
         )
         .bind(key.public_key)
         .bind(guild_id)
+        .bind(key.manage_webhook)
         .fetch_one(&self.pool)
         .await?
         .into();
@@ -127,14 +128,15 @@ impl KeyRepository for PostgresKeyRepository {
         let r = sqlx::query_as::<_, PostgresKey>(
             r#"
             INSERT INTO keys (guild_id, public_key)
-            VALUES ($1, $2)
+            VALUES ($1, $2, $3)
             ON CONFLICT (guild_id) DO UPDATE
-            SET public_key = $2
-            RETURNING guild_id, public_key
+            SET public_key = $2, manage_webhook = $3
+            RETURNING guild_id, public_key, manage_webhook
             "#,
         )
         .bind(guild_id)
         .bind(key.public_key)
+        .bind(key.manage_webhook)
         .fetch_one(&self.pool)
         .await?
         .into();
