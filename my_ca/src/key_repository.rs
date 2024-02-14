@@ -27,5 +27,5 @@ pub trait KeyRepository {
     async fn get_key(&self, guild_id: u64) -> KeyResult<Key>;
     async fn update_key(&self, key: Key) -> KeyResult<Key>;
     async fn upsert_key(&self, key: Key) -> KeyResult<Key>;
-    async fn delete_key(&self, guild_id: u64) -> KeyResult<u64>;
+    async fn delete_key(&self, guild_id: u64) -> KeyResult<Key>;
 }
