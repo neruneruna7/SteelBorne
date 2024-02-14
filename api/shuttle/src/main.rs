@@ -5,7 +5,10 @@ use actix_web::{
     web::{self, ServiceConfig},
     HttpResponse, Responder, Result,
 };
-use my_ca::key_repository::{postgres_key_repository::PostgresKeyRepository, Key};
+use my_ca::{
+    key::service,
+    key_repository::{postgres_key_repository::PostgresKeyRepository, Key},
+};
 use shuttle_actix_web::ShuttleActixWeb;
 
 use askama::Template;
@@ -42,10 +45,11 @@ fn secret_store_read(secret_sotore: SecretStore) -> Result<Vec<Key>> {
     let mut keys = Vec::new();
     for i in 0..row_num {
         if let Some(key) = secret_sotore.get(&format!("K{}", i)) {
-            keys.push(serde_json::from_str::<Key>(&key).unwrap());
+            println!("key: {}", &key);
+            keys.push(serde_json::from_str::<Key>(&key.replace("/", "")).unwrap());
             // dbに格納する
         } else {
-            panic!("KEY_{} is not found", i);
+            panic!("KEY{} is not found", i);
         }
     }
 
@@ -57,6 +61,9 @@ async fn main(
     #[shuttle_shared_db::Postgres()] pool: PgPool,
     #[shuttle_secrets::Secrets] secret_store: SecretStore,
 ) -> ShuttleActixWeb<impl FnOnce(&mut ServiceConfig) + Send + Clone + 'static> {
+    let k0 = secret_store.get("K0").unwrap();
+    println!("k0: {}", k0);
+
     let secret_keys = secret_store_read(secret_store).unwrap();
 
     let _ = pool
@@ -69,7 +76,7 @@ async fn main(
         pool,
         secret_keys,
     );
-    key_repository.init().await.unwrap();
+    // key_repository.init().await.unwrap();
     let key_repository = actix_web::web::Data::new(key_repository);
 
     let config = move |cfg: &mut ServiceConfig| {
@@ -79,7 +86,11 @@ async fn main(
                 .service(trial_askama::trial_askama)
                 .service(trial_askama::trial_askama_list),
         )
-        .service(web::scope("/ubiquitimes").app_data(key_repository));
+        .service(
+            web::scope("/ubiquitimes")
+                .app_data(key_repository)
+                .configure(service),
+        );
     };
 
     Ok(config.into())

@@ -4,22 +4,12 @@ use super::{Key, KeyRepository, KeyResult};
 
 pub struct PostgresKeyRepository {
     pool: sqlx::PgPool,
-    secret: Vec<Key>,
+    pub(crate) secret: Vec<Key>,
 }
 
 impl PostgresKeyRepository {
     pub fn new(pool: sqlx::PgPool, secret: Vec<Key>) -> Self {
         Self { pool, secret }
-    }
-
-    /// テーブルのレコードを初期化する
-    ///
-    /// つまり，必要なレコードを格納する
-    pub async fn init(&self) -> KeyResult<()> {
-        for key in self.secret.iter() {
-            self.set_key(key.clone()).await?;
-        }
-        Ok(())
     }
 }
 

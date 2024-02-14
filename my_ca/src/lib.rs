@@ -1,8 +1,6 @@
-use actix_web::{get, HttpResponse, Responder, Result};
+use actix_web::{get, web, HttpResponse, Responder, Result};
+use key_repository::KeyRepository;
 
+mod init;
+pub mod key;
 pub mod key_repository;
-
-#[get("oreoreca/get")]
-async fn get_publickey() -> Result<impl Responder> {
-    Ok(HttpResponse::Ok().body("ok"))
-}

@@ -1,6 +1,8 @@
 use anyhow::Error;
 pub mod postgres_key_repository;
 
+pub use postgres_key_repository::PostgresKeyRepository;
+
 use serde::{Deserialize, Serialize};
 pub type KeyResult<T> = Result<T, Error>;
 
@@ -8,6 +10,16 @@ pub type KeyResult<T> = Result<T, Error>;
 pub struct Key {
     guild_id: u64,
     public_key: String,
+}
+
+impl Key {
+    pub fn new(guild_id: u64, public_key: &str) -> Self {
+        let public_key = public_key.to_string();
+        Self {
+            guild_id,
+            public_key,
+        }
+    }
 }
 
 pub trait KeyRepository {
