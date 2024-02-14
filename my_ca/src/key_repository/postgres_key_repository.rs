@@ -1,9 +1,8 @@
-use std::borrow::Borrow;
+//// Postgresにはu64型を入れられないので，Stringに変換する
+//// 呼び出し元が気にしないでいいように（u64として扱えるように）すること
 
 use sqlx::Row;
 
-//// Postgresにはu64型を入れられないので，Stringに変換する
-/// 呼び出し元が気にしないでいいように（u64として扱えるように）すること
 use super::{Key, KeyRepository, KeyResult};
 
 /// Postgresにはu64型を入れられないので，Stringに変換する

@@ -5,16 +5,13 @@ use actix_web::{
     web::{self, ServiceConfig},
     HttpResponse, Responder, Result,
 };
-use my_ca::{
-    key::service,
-    key_repository::{postgres_key_repository::PostgresKeyRepository, Key},
-};
+use my_ca::key::service;
 use shuttle_actix_web::ShuttleActixWeb;
 
 use askama::Template;
 use serde::{Deserialize, Serialize};
 use shuttle_runtime::CustomError;
-use shuttle_secrets::SecretStore;
+
 use sqlx::{Executor, PgPool};
 
 #[derive(Debug, Serialize, Deserialize, Template)]

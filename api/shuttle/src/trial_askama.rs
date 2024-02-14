@@ -1,8 +1,4 @@
-use actix_web::{
-    get,
-    web::{self, ServiceConfig},
-    HttpRequest, HttpResponse, Responder, Result,
-};
+use actix_web::{get, HttpRequest, HttpResponse, Responder, Result};
 use askama::Template;
 
 #[derive(Template)]
@@ -18,7 +14,7 @@ impl<'a> WelcomeTemplate<'a> {
 }
 
 #[get("/")]
-pub async fn trial_askama(req: HttpRequest) -> Result<impl Responder> {
+pub async fn trial_askama(_req: HttpRequest) -> Result<impl Responder> {
     let welcome = WelcomeTemplate::new("neruneruna7");
     let renderd = welcome.render().unwrap();
 
@@ -38,7 +34,7 @@ impl ListTemplate {
 }
 
 #[get("/list")]
-pub async fn trial_askama_list(req: HttpRequest) -> Result<impl Responder> {
+pub async fn trial_askama_list(_req: HttpRequest) -> Result<impl Responder> {
     let items = vec![
         "item1".to_string(),
         "item2".to_string(),
