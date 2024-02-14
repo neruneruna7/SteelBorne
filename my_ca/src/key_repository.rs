@@ -11,8 +11,9 @@ pub struct Key {
 }
 
 pub trait KeyRepository {
-    async fn set_key(&self, guild_id: u64, public_key: String) -> KeyResult<Key>;
+    async fn set_key(&self, key: Key) -> KeyResult<Key>;
     async fn get_key(&self, guild_id: u64) -> KeyResult<Key>;
-    async fn update_key(&self, guild_id: u64, public_key: String) -> KeyResult<Key>;
+    async fn update_key(&self, key: Key) -> KeyResult<Key>;
+    async fn upsert_key(&self, key: Key) -> KeyResult<Key>;
     async fn delete_key(&self, guild_id: u64) -> KeyResult<u64>;
 }

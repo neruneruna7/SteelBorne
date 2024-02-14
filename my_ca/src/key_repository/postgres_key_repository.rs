@@ -4,17 +4,31 @@ use super::{Key, KeyRepository, KeyResult};
 
 pub struct PostgresKeyRepository {
     pool: sqlx::PgPool,
+    secret: Vec<Key>,
 }
 
 impl PostgresKeyRepository {
-    pub fn new(pool: sqlx::PgPool) -> Self {
-        Self { pool }
+    pub fn new(pool: sqlx::PgPool, secret: Vec<Key>) -> Self {
+        Self { pool, secret }
+    }
+
+    /// テーブルのレコードを初期化する
+    ///
+    /// つまり，必要なレコードを格納する
+    pub async fn init(&self) -> KeyResult<()> {
+        for key in self.secret.iter() {
+            self.set_key(key.clone()).await?;
+        }
+        Ok(())
     }
 }
 
 impl KeyRepository for PostgresKeyRepository {
-    async fn set_key(&self, guild_id: u64, public_key: String) -> KeyResult<Key> {
-        let guild_id = format!("{}", guild_id);
+    /// 公開鍵を格納する
+    ///
+    /// しかるべき者以外は操作してはならない
+    async fn set_key(&self, key: Key) -> KeyResult<Key> {
+        let guild_id = format!("{}", key.guild_id);
         let r = sqlx::query!(
             r#"
             INSERT INTO keys (guild_id, public_key)
@@ -22,7 +36,7 @@ impl KeyRepository for PostgresKeyRepository {
             RETURNING guild_id, public_key
             "#,
             guild_id,
-            public_key
+            key.public_key
         )
         .fetch_one(&self.pool)
         .await?;
@@ -33,6 +47,9 @@ impl KeyRepository for PostgresKeyRepository {
         })
     }
 
+    /// 公開鍵を取得する
+    ///
+    /// 誰が呼び出してもいい
     async fn get_key(&self, guild_id: u64) -> KeyResult<Key> {
         // Postgresにu64を入れられないので，Stringに変換する
         let guild_id = format!("{}", guild_id);
@@ -53,8 +70,11 @@ impl KeyRepository for PostgresKeyRepository {
         })
     }
 
-    async fn update_key(&self, guild_id: u64, public_key: String) -> KeyResult<Key> {
-        let guild_id = format!("{}", guild_id);
+    /// 公開鍵を更新する
+    ///
+    /// しかるべき者以外は操作してはならない
+    async fn update_key(&self, key: Key) -> KeyResult<Key> {
+        let guild_id = format!("{}", key.guild_id);
         let r = sqlx::query!(
             r#"
             UPDATE keys
@@ -62,7 +82,7 @@ impl KeyRepository for PostgresKeyRepository {
             WHERE guild_id = $2
             RETURNING guild_id, public_key
             "#,
-            public_key,
+            key.public_key,
             guild_id
         )
         .fetch_one(&self.pool)
@@ -74,6 +94,9 @@ impl KeyRepository for PostgresKeyRepository {
         })
     }
 
+    /// 公開鍵を削除する
+    ///
+    /// しかるべき者以外は操作してはならない
     async fn delete_key(&self, guild_id: u64) -> KeyResult<u64> {
         let guild_id = format!("{}", guild_id);
         let r = sqlx::query!(
@@ -88,5 +111,27 @@ impl KeyRepository for PostgresKeyRepository {
         .await?;
 
         Ok(r.guild_id.parse().unwrap())
+    }
+
+    async fn upsert_key(&self, key: Key) -> KeyResult<Key> {
+        let guild_id = format!("{}", key.guild_id);
+        let r = sqlx::query!(
+            r#"
+            INSERT INTO keys (guild_id, public_key)
+            VALUES ($1, $2)
+            ON CONFLICT (guild_id) DO UPDATE
+            SET public_key = $2
+            RETURNING guild_id, public_key
+            "#,
+            guild_id,
+            key.public_key
+        )
+        .fetch_one(&self.pool)
+        .await?;
+
+        Ok(Key {
+            guild_id: r.guild_id.parse().unwrap(),
+            public_key: r.public_key,
+        })
     }
 }

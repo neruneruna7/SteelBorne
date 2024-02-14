@@ -1,4 +1,5 @@
 .env*
+Secrets.toml
 /target
 dist/
 node_modules/
