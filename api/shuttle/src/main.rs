@@ -57,7 +57,7 @@ async fn main(
                 .service(trial_askama::trial_askama_list),
         )
         .service(
-            web::scope("/ubiquitimes")
+            web::scope("/ubiquitimes/v1")
                 .app_data(key_repository)
                 .configure(service),
         );
