@@ -1,5 +1,5 @@
 GET http://127.0.0.1:8000/ubiquitimes/oreoreca/get/1150053692540723281
 
 
-GET https://steel-borne.shuttleapp.rs/ubiquitimes/oreoreca/get/1150053692540723281
+GET https://steel-borne.shuttleapp.rs/ubiquitimes/v1/oreoreca/get/123456789
 
