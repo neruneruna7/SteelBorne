@@ -3,7 +3,7 @@
 
 use sqlx::Row;
 
-use super::{Key, KeyRepository, KeyResult};
+use super::{KeyAndWebhook, KeyRepository, KeyResult};
 
 /// Postgresにはu64型を入れられないので，Stringに変換する
 /// 変換するときに使う構造体
@@ -15,11 +15,11 @@ struct PostgresKey {
 }
 
 // Fromトレイトを実装して，Keyに変換できるようにする
-impl From<PostgresKey> for Key {
+impl From<PostgresKey> for KeyAndWebhook {
     fn from(p: PostgresKey) -> Self {
-        Key {
+        KeyAndWebhook {
             guild_id: p.guild_id.parse().unwrap(),
-            public_key: p.public_key,
+            public_key_pem: p.public_key,
             manage_webhook: p.manage_webhook,
         }
     }
@@ -27,11 +27,11 @@ impl From<PostgresKey> for Key {
 
 pub struct PostgresKeyRepository {
     pool: sqlx::PgPool,
-    pub(crate) secret: Vec<Key>,
+    pub(crate) secret: Vec<KeyAndWebhook>,
 }
 
 impl PostgresKeyRepository {
-    pub fn new(pool: sqlx::PgPool, secret: Vec<Key>) -> Self {
+    pub fn new(pool: sqlx::PgPool, secret: Vec<KeyAndWebhook>) -> Self {
         Self { pool, secret }
     }
 }
@@ -40,7 +40,7 @@ impl KeyRepository for PostgresKeyRepository {
     /// 公開鍵を格納する
     ///
     /// しかるべき者以外は操作してはならない
-    async fn set_key(&self, key: Key) -> KeyResult<Key> {
+    async fn set_key(&self, key: KeyAndWebhook) -> KeyResult<KeyAndWebhook> {
         let guild_id = format!("{}", key.guild_id);
         let r = sqlx::query_as::<_, PostgresKey>(
             r#"
@@ -50,7 +50,7 @@ impl KeyRepository for PostgresKeyRepository {
             "#,
         )
         .bind(guild_id)
-        .bind(key.public_key)
+        .bind(key.public_key_pem)
         .bind(key.manage_webhook)
         .fetch_one(&self.pool)
         .await?
@@ -61,7 +61,7 @@ impl KeyRepository for PostgresKeyRepository {
     /// 公開鍵を取得する
     ///
     /// 誰が呼び出してもいい
-    async fn get_key(&self, guild_id: u64) -> KeyResult<Key> {
+    async fn get_key(&self, guild_id: u64) -> KeyResult<KeyAndWebhook> {
         // Postgresにu64を入れられないので，Stringに変換する
         let guild_id = format!("{}", guild_id);
         let r = sqlx::query_as::<_, PostgresKey>(
@@ -82,7 +82,7 @@ impl KeyRepository for PostgresKeyRepository {
     /// 公開鍵を更新する
     ///
     /// しかるべき者以外は操作してはならない
-    async fn update_key(&self, key: Key) -> KeyResult<Key> {
+    async fn update_key(&self, key: KeyAndWebhook) -> KeyResult<KeyAndWebhook> {
         let guild_id = format!("{}", key.guild_id);
         let r = sqlx::query_as::<_, PostgresKey>(
             r#"
@@ -92,7 +92,7 @@ impl KeyRepository for PostgresKeyRepository {
             RETURNING guild_id, public_key, manage_webhook
             "#,
         )
-        .bind(key.public_key)
+        .bind(key.public_key_pem)
         .bind(guild_id)
         .bind(key.manage_webhook)
         .fetch_one(&self.pool)
@@ -105,7 +105,7 @@ impl KeyRepository for PostgresKeyRepository {
     /// 公開鍵を削除する
     ///
     /// しかるべき者以外は操作してはならない
-    async fn delete_key(&self, guild_id: u64) -> KeyResult<Key> {
+    async fn delete_key(&self, guild_id: u64) -> KeyResult<KeyAndWebhook> {
         let guild_id = format!("{}", guild_id);
         let r = sqlx::query_as::<_, PostgresKey>(
             r#"
@@ -122,7 +122,7 @@ impl KeyRepository for PostgresKeyRepository {
         Ok(r)
     }
 
-    async fn upsert_key(&self, key: Key) -> KeyResult<Key> {
+    async fn upsert_key(&self, key: KeyAndWebhook) -> KeyResult<KeyAndWebhook> {
         let guild_id = format!("{}", key.guild_id);
         let r = sqlx::query_as::<_, PostgresKey>(
             r#"
@@ -134,7 +134,7 @@ impl KeyRepository for PostgresKeyRepository {
             "#,
         )
         .bind(guild_id)
-        .bind(key.public_key)
+        .bind(key.public_key_pem)
         .bind(key.manage_webhook)
         .fetch_one(&self.pool)
         .await?
