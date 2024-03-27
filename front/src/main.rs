@@ -28,11 +28,11 @@ pub enum Route {
 }
 
 impl Route {
-    // 引数で渡すとうまくいかないので，冗長かもしれんがこのコードを使う
-    pub fn routing(&self) -> Self {
+    // DisplayトレイトはRoutableと衝突したので実装できない
+    pub fn route_name(&self) -> String {
         match self {
-            Route::Home => Route::Home {},
-            Route::Profile => Route::Home {},
+            Route::Home => String::from("HOME"),
+            Route::Profile => String::from("PROFILE"),
         }
     }
 }

@@ -10,14 +10,11 @@ pub struct SelectorProps {
 
 pub fn Selector(cx: Scope<SelectorProps>) -> Element {
     let text = &cx.props.text;
-    // let navigate_to = &;
+    let navigate_to = cx.props.navigate_to.clone();
     cx.render(rsx!(
             div { class: "bg-inherit  w-full my-4 px-2 flex flex-wrap flex-col md:flex-row justify-center items-center",
             Link {
-                to: match cx.props.navigate_to {
-                    Route::Home => Route::Home {},
-                    Route::Profile => Route::Profile {},
-                },
+                to: navigate_to,
                 div {
                     class: "w-48 p-1 hover:bg-gradient-to-r from-neutral-950 from-0% via-neutral-700 via-50% to-neutral-950",
                     
