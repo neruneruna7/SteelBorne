@@ -1,5 +1,6 @@
 use dioxus::prelude::*;
 
+#[component]
 pub fn Title(cx: Scope) -> Element {
     // でかでかとしたSteel Borne
     cx.render(rsx!(

@@ -12,12 +12,12 @@ pub fn NavigationBar(cx: Scope<NavigationBarProps>) -> Element {
     // let navigate_to = &;
     cx.render(rsx!(
         div {
-            class: "absolute top-0 left-0 w-2/5 h-full border pt-5 pl-6 z-10 flex flex-col justify-start items-stretch",
+            class: "sticky top-0 left-0 w-72 h-screen border pt-5 pl-6 z-10 flex flex-col justify-start items-stretch",
             div {
                 // 青っぽいグラデーション付きで，現在の場所を示す
                 class: "bg-gradient-to-r from-slate-600 w-auto pl-4 flex flex-wrap flex-col items-start",
                 h1 {
-                    class: "text-slate-100 text-2xl text-center",
+                    class: "text-slate-100 text-3xl text-center",
                     match now_route {
                         Route::Home => "HOME",
                         Route::Profile => "PROFILE",

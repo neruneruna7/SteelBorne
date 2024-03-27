@@ -8,6 +8,7 @@ pub struct SelectorProps {
     navigate_to: Route,
 }
 
+#[component]
 pub fn Selector(cx: Scope<SelectorProps>) -> Element {
     let text = &cx.props.text;
     let navigate_to = cx.props.navigate_to.clone();
