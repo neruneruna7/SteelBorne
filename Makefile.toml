@@ -35,3 +35,20 @@ cargo build
 cargo test
 '''
 # run_task = "container-stop"
+
+[tasks.front-build]
+workspace = false
+script_runner = "@shell"
+script = '''
+# shuttle issue with static files
+# location is different depending on the environment
+rm -rf api/shuttle/static static
+mkdir api/shuttle/static
+mkdir static
+cd front
+dx build --release
+# local development 
+cp -r dist/* ../api/shuttle/static
+# production
+cp -r dist/* ../static
+'''

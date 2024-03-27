@@ -37,8 +37,6 @@ impl Route {
     }
 }
 
-
-
 // create a component that renders a div with the text "Hello, world!"
 fn App(cx: Scope) -> Element {
     cx.render(rsx!(Router::<Route> {}))
