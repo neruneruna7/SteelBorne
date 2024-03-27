@@ -1,7 +1,7 @@
 #![allow(non_snake_case)]
 mod components;
 
-use components::{Footer, Header, Title};
+use components::{Footer, Header, Selector, Title};
 // import the prelude to get access to the `rsx!` macro and the `Scope` and `Element` types
 use dioxus::prelude::*;
 
@@ -17,9 +17,9 @@ fn App(cx: Scope) -> Element {
 
     cx.render(rsx! {
         main {
-            class: "relative z-0 bg-neutral-500 w-screen h-auto min-h-screen flex flex-col justify-start items-stretch",
-            Header {}
+            class: "relative z-0 bg-neutral-950 w-screen h-auto min-h-screen flex flex-col justify-start items-stretch",
             Title {}
+            Selector { text:"text".to_string() }
             section {
                 class: "md:container md:mx-auto md:py-8 flex-1",
             }
