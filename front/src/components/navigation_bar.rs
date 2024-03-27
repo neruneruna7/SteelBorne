@@ -4,7 +4,7 @@ use dioxus_router::components::Link;
 
 #[derive(PartialEq, Props, Clone)]
 pub struct NavigationBarProps {
-    now_route: Route
+    now_route: Route,
 }
 
 pub fn NavigationBar(cx: Scope<NavigationBarProps>) -> Element {
@@ -35,10 +35,9 @@ pub fn NavigationBar(cx: Scope<NavigationBarProps>) -> Element {
     ))
 }
 
-
 #[derive(PartialEq, Props, Clone)]
 pub struct NavigationLinkProps {
-    navigate_to: Route
+    navigate_to: Route,
 }
 
 fn NavigationLink(cx: Scope<NavigationLinkProps>) -> Element {

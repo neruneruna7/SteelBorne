@@ -19,7 +19,6 @@ pub fn ProfileCard(cx: Scope<ProfileCardProps>) -> Element {
     ))
 }
 
-
 #[derive(PartialEq, Props, Clone)]
 pub struct NameProps {
     name: String,
@@ -49,7 +48,7 @@ pub struct ProfileImageProps {
 
 #[component]
 pub fn ProfileImage(cx: Scope<ProfileImageProps>) -> Element {
-    let image_path =  cx.props.icon_image_path.as_str();
+    let image_path = cx.props.icon_image_path.as_str();
     cx.render(rsx!(
         div {
             class: "w-1/2 h-auto m-4 border-black border-4  overflow-hidden",
