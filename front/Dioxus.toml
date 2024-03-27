@@ -39,7 +39,7 @@ script = []
 # serve: [dev-server] only
 
 # CSS style file
-style = []
+style = ["./css/*"]
 
 # Javascript code file
 script = []
