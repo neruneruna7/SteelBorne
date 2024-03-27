@@ -1,6 +1,13 @@
 [config]
 default_to_workspace = false
 
+[tasks.tw-w]
+description = "tailwindcss watch"
+cwd = "./front"
+script_runner = "@shell"
+script = '''
+npx tailwindcss -i ./input.css -o ./public/tailwind.css --watch
+'''
 
 [tasks.db-prepare]
 command = "cargo"
@@ -10,53 +17,21 @@ args = ["sqlx","prepare", "--workspace"]
 command = "docker"
 args = ["container","start","${DB_CONTAINER_NAME}"]
 
-  
-
 [tasks.container-stop]
 command = "docker"
 args = ["container","stop","${DB_CONTAINER_NAME}"]
 
 
-[tasks.fmt]
-command = "cargo"
-args = ["fmt"]
-
-# dependencies = ["container-start"]
-
-  
-
-[tasks.clippy]
-command = "cargo"
-args = ["clippy","--fix","--allow-dirty"]
-
-  
-
-[tasks.typos]
-command = "typos"
-args = ["-w"]
-
-  
-
-[tasks.update]
-command = "cargo"
-args = ["update"]
-
-  
-
-[tasks.build]
-command = "cargo"
-args = ["build"]
-dependencies = ["fmt","clippy","typos","update"]
-
-  
-
-[tasks.test]
-command = "cargo"
-args = ["test"]
-dependencies = ["build"]
-
 [tasks.ci]
 description = "事前に対応するDBのDockerコンテナを起動しておくこと"
-dependencies = ["test"]
-
+# dependencies = ["test"]
+script_runner = "@shell"
+script = '''
+cargo fmt
+cargo clippy --fix --allow-dirty
+typos -w
+cargo update
+cargo build
+cargo test
+'''
 # run_task = "container-stop"
