@@ -19,7 +19,8 @@ fn App(cx: Scope) -> Element {
         main {
             class: "relative z-0 bg-neutral-950 w-screen h-auto min-h-screen flex flex-col justify-start items-stretch",
             Title {}
-            Selector { text:"text".to_string() }
+            Selector { text:"PROFILE".to_string() }
+            Selector { text:"LANGUAGE".to_string() }
             section {
                 class: "md:container md:mx-auto md:py-8 flex-1",
             }
