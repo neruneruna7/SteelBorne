@@ -1,7 +1,7 @@
 #![allow(non_snake_case)]
 mod components;
 
-use components::{Footer, Header, Selector, Title};
+use components::{Counter, Footer, Header, Selector, Title};
 // import the prelude to get access to the `rsx!` macro and the `Scope` and `Element` types
 use dioxus::prelude::*;
 
@@ -21,6 +21,7 @@ fn App(cx: Scope) -> Element {
             Title {}
             Selector { text:"PROFILE".to_string() }
             Selector { text:"LANGUAGE".to_string() }
+            Counter {}
             section {
                 class: "md:container md:mx-auto md:py-8 flex-1",
             }
