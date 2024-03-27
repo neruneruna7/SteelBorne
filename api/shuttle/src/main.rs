@@ -27,9 +27,9 @@ async fn index() -> Result<impl Responder> {
         title: "Steel Borne".to_string(),
         content: "neruneruna7の技術お試し用のwebサイトです".to_string(),
     };
-    let renderd = index.render().unwrap();
+    let rendered = index.render().unwrap();
 
-    Ok(HttpResponse::Ok().body(renderd))
+    Ok(HttpResponse::Ok().body(rendered))
 }
 
 #[shuttle_runtime::main]

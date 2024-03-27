@@ -16,9 +16,9 @@ impl<'a> WelcomeTemplate<'a> {
 #[get("/")]
 pub async fn trial_askama(_req: HttpRequest) -> Result<impl Responder> {
     let welcome = WelcomeTemplate::new("neruneruna7");
-    let renderd = welcome.render().unwrap();
+    let rendered = welcome.render().unwrap();
 
-    Ok(HttpResponse::Ok().body(renderd))
+    Ok(HttpResponse::Ok().body(rendered))
 }
 
 #[derive(Template)]
@@ -41,7 +41,7 @@ pub async fn trial_askama_list(_req: HttpRequest) -> Result<impl Responder> {
         "item3".to_string(),
     ];
     let list_template = ListTemplate::new(items);
-    let renderd = list_template.render().unwrap();
+    let rendered = list_template.render().unwrap();
 
-    Ok(HttpResponse::Ok().body(renderd))
+    Ok(HttpResponse::Ok().body(rendered))
 }
