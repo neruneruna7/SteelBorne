@@ -16,7 +16,19 @@ pub fn ProfileCard(cx: Scope<ProfileCardProps>) -> Element {
                 class: "border-2 w-full h-full p-7 bg-slate-600/50",
                 Name {name: String::from("neruneruna7")}
                 ProfileImage {icon_image_path: cx.props.icon_image_path.clone()}
-                SnsLinkCard { sns_url: "https://github.com/neruneruna7", icon_path: "sns_icons/github.svg", alt: "github icon" }
+                div {
+                    // 子要素を横並びにする
+                    class: "flex flex-row justify-start items-center",
+                    // snsへのリンクたちをラップする
+                    // github
+                    SnsLinkCard { sns_url: "https://github.com/neruneruna7", icon_path: "sns_icons/github.svg", alt: "github icon" }
+                    // zenn
+                    SnsLinkCard { sns_url: "https://zenn.dev/neruneruna7", icon_path: "sns_icons/zenn.svg", alt: "zenn icon" }
+                    // qiita
+                    SnsLinkCard { sns_url: "https://qiita.com/neruneruna7", icon_path: "sns_icons/qiita.svg", alt: "qiita icon" }
+                    // twitter(X)
+                    SnsLinkCard { sns_url: "https://twitter.com/neruneruna7", icon_path: "sns_icons/x.svg", alt: "x icon" }
+                }
             }
         }
     ))

@@ -14,9 +14,9 @@ pub fn SnsLinkCard(cx: Scope<SnsLinkCardProps>) -> Element {
 
     cx.render(rsx!(
         div {
-            class: "flex space-x-4",
+            class: "w-fit flex space-x-4 m-4 border-gray-300 border-2 bg-gray-500",
             a {
-                class: "w-8 h-8",
+                class: "w-12 h-12 p-1",
                 href: sns_url,
                 img {
                     class: "w-full h-full",
