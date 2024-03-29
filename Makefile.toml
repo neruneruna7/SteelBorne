@@ -51,4 +51,7 @@ dx build --release
 cp -r dist/* ../api/shuttle/static
 # production
 cp -r dist/* ../static
+# wasm binary size reduction
+cd ../api/shuttle
+wasm-snip -o static/assets/dioxus/steel-borne_bg.wasm static/assets/dioxus/steel-borne_bg.wasm
 '''
