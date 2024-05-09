@@ -27,9 +27,9 @@ async fn index() -> Result<impl Responder> {
         title: "Steel Borne".to_string(),
         content: "neruneruna7の技術お試し用のwebサイトです".to_string(),
     };
-    let renderd = index.render().unwrap();
+    let rendered = index.render().unwrap();
 
-    Ok(HttpResponse::Ok().body(renderd))
+    Ok(HttpResponse::Ok().body(rendered))
 }
 
 #[shuttle_runtime::main]
@@ -50,11 +50,16 @@ async fn main(
     let key_repository = actix_web::web::Data::new(key_repository);
 
     let config = move |cfg: &mut ServiceConfig| {
-        cfg.service(web::scope("/").service(index));
+        // cfg.service(web::scope("/").service(index));
         cfg.service(
             web::scope("/ta")
                 .service(trial_askama::trial_askama)
                 .service(trial_askama::trial_askama_list),
+        )
+        .service(
+            actix_files::Files::new("/", "api/shuttle/static/")
+                .show_files_listing()
+                .index_file("index.html"),
         )
         .service(
             web::scope("/ubiquitimes/v1")

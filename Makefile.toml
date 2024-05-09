@@ -1,0 +1,57 @@
+[config]
+default_to_workspace = false
+
+[tasks.tw-w]
+description = "tailwindcss watch"
+cwd = "./front"
+script_runner = "@shell"
+script = '''
+npx tailwindcss -i ./input.css -o ./public/tailwind.css --watch
+'''
+
+[tasks.db-prepare]
+command = "cargo"
+args = ["sqlx","prepare", "--workspace"]
+
+[tasks.container-start]
+command = "docker"
+args = ["container","start","${DB_CONTAINER_NAME}"]
+
+[tasks.container-stop]
+command = "docker"
+args = ["container","stop","${DB_CONTAINER_NAME}"]
+
+
+[tasks.ci]
+description = "事前に対応するDBのDockerコンテナを起動しておくこと"
+# dependencies = ["test"]
+script_runner = "@shell"
+script = '''
+cargo fmt
+cargo clippy --fix --allow-dirty
+typos -w
+cargo update
+cargo build
+cargo test
+'''
+# run_task = "container-stop"
+
+[tasks.front-build]
+workspace = false
+script_runner = "@shell"
+script = '''
+# shuttle issue with static files
+# location is different depending on the environment
+rm -rf api/shuttle/static static
+mkdir api/shuttle/static
+mkdir static
+cd front
+dx build --release
+# local development 
+cp -r dist/* ../api/shuttle/static
+# production
+cp -r dist/* ../static
+# wasm binary size reduction
+cd ../api/shuttle
+wasm-snip -o static/assets/dioxus/steel-borne_bg.wasm static/assets/dioxus/steel-borne_bg.wasm
+'''

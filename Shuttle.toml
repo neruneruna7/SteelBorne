@@ -1,5 +1,6 @@
 name="steel-borne"
 assets = [
     "api/shuttle/templates/*",
+    "api/shuttle/static/*",
     "my_ca/src/init.rs"
 ]
